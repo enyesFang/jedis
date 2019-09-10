@@ -47,6 +47,11 @@ public class Jedis extends BinaryJedis implements JedisCommands, MultiKeyCommand
     super(hp);
   }
 
+  /**
+   * new Jedis("192.168.136.135", 6379)
+   * @param host host
+   * @param port port
+   */
   public Jedis(final String host, final int port) {
     super(host, port);
   }
@@ -139,6 +144,7 @@ public class Jedis extends BinaryJedis implements JedisCommands, MultiKeyCommand
    * GB).
    * <p>
    * Time complexity: O(1)
+   * 设置key-value。
    * @param key
    * @param value
    * @return Status code reply
@@ -491,6 +497,7 @@ public class Jedis extends BinaryJedis implements JedisCommands, MultiKeyCommand
    * atomic.
    * <p>
    * Time complexity: O(1)
+   * 设置key-value有效期为5秒。
    * @param key
    * @param seconds
    * @param value

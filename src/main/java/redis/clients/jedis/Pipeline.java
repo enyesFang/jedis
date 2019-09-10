@@ -6,6 +6,11 @@ import java.util.List;
 
 import redis.clients.jedis.exceptions.JedisDataException;
 
+/**
+ * 客户端将执行的命令写入到缓冲中，最后由exec命令一次性发送给redis执行返回。
+ * pipeline最后一次性发送给服务端，请求次数相对于multi减少.
+ * 而pipeline不保证原子性.
+ */
 public class Pipeline extends MultiKeyPipelineBase implements Closeable {
 
   private MultiResponseBuilder currentMulti;

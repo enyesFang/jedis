@@ -163,6 +163,9 @@ public class Connection implements Closeable {
     this.port = port;
   }
 
+  /**
+   * 使用socket与server端建立TCP链接。
+   */
   public void connect() {
     if (!isConnected()) {
       try {

@@ -20,6 +20,7 @@ import redis.clients.jedis.params.ZIncrByParams;
 
 /**
  * Common interface for sharded and non-sharded BinaryJedis
+ * 二进制(byte[])设置redis key-value值命令。
  */
 public interface BinaryJedisCommands {
   String set(byte[] key, byte[] value);

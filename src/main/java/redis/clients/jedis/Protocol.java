@@ -17,6 +17,12 @@ import redis.clients.jedis.util.RedisInputStream;
 import redis.clients.jedis.util.RedisOutputStream;
 import redis.clients.jedis.util.SafeEncoder;
 
+/**
+ * Redis 协议（RESP）.
+ * 所有发送至 Redis 服务器的参数都是二进制安全（binary safe）的。
+ *
+ * more : http://redisdoc.com/topic/protocol.html
+ */
 public final class Protocol {
 
   private static final String ASK_PREFIX = "ASK ";
@@ -92,13 +98,20 @@ public final class Protocol {
   private static void sendCommand(final RedisOutputStream os, final byte[] command,
       final byte[]... args) {
     try {
+      // * 号
       os.write(ASTERISK_BYTE);
+      // 消息元素个数=参数个数+1个命令，并\r\n换行。
       os.writeIntCrLf(args.length + 1);
+      // $ 号
       os.write(DOLLAR_BYTE);
+      // 命令1的字节长度，并\r\n换行。
       os.writeIntCrLf(command.length);
+      // 命令，如SET，并\r\n换行
       os.write(command);
       os.writeCrLf();
 
+      // 每个参数使用$隔开，
+      // $参数byte长度\r\n参数byte\r\n
       for (final byte[] arg : args) {
         os.write(DOLLAR_BYTE);
         os.writeIntCrLf(arg.length);

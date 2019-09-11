@@ -2,6 +2,9 @@ package redis.clients.jedis.commands;
 
 import redis.clients.jedis.DebugParams;
 
+/**
+ * 对db级别的基本命令。
+ */
 public interface BasicCommands {
 
   /**

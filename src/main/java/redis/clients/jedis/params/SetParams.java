@@ -7,9 +7,23 @@ import redis.clients.jedis.util.SafeEncoder;
 
 public class SetParams extends Params {
 
+  /**
+   * Only set the key if it already exist
+   */
   private static final String XX = "xx";
+  /**
+   * Only set the key if it does not already exist
+   */
   private static final String NX = "nx";
+  /**
+   * expire time units: PX = milliseconds;
+   * @see #px(long)
+   */
   private static final String PX = "px";
+  /**
+   * expire time units: EX = seconds;
+   * @see #ex(int)
+   */
   private static final String EX = "ex";
 
   public SetParams() {

@@ -177,6 +177,7 @@ public class Jedis extends BinaryJedis implements JedisCommands, MultiKeyCommand
    * stored at key is not a string an error is returned because GET can only handle string values.
    * <p>
    * Time complexity: O(1)
+   * 根据key获取value。
    * @param key
    * @return Bulk reply
    */
@@ -465,6 +466,7 @@ public class Jedis extends BinaryJedis implements JedisCommands, MultiKeyCommand
    * never fails.
    * <p>
    * Time complexity: O(1) for every key
+   * 根据多个Key获取多个value。避免多次请求带来的网络开销，提高性能。
    * @param keys
    * @return Multi bulk reply
    */
@@ -522,6 +524,8 @@ public class Jedis extends BinaryJedis implements JedisCommands, MultiKeyCommand
    * Both MSET and MSETNX are atomic operations. This means that for instance if the keys A and B
    * are modified, another client talking to Redis can either see the changes to both A and B at
    * once, or no modification at all.
+   * 一次设置多个key-value。
+   * jedis.mset("name","fc","age","30")
    * @see #msetnx(String...)
    * @param keysvalues
    * @return Status code reply Basically +OK as MSET can't fail
@@ -686,6 +690,8 @@ public class Jedis extends BinaryJedis implements JedisCommands, MultiKeyCommand
    * Time complexity: O(1). The amortized time complexity is O(1) assuming the appended value is
    * small and the already present value is of any size, since the dynamic string library used by
    * Redis will double the free space available on every reallocation.
+   * 给字符串追加内容,给已经存在的key对应的value后追加内容。
+   * jedis.append("content","lucy");
    * @param key
    * @param value
    * @return Integer reply, specifically the total length of the string after the append operation.
@@ -726,6 +732,8 @@ public class Jedis extends BinaryJedis implements JedisCommands, MultiKeyCommand
    * If key does not exist, a new key holding a hash is created.
    * <p>
    * <b>Time complexity:</b> O(1)
+   * redis.hset("url","google","www.google.cn");
+   * redis.hset("url","sina","www.sina.com.cn");
    * @param key
    * @param field
    * @param value
@@ -803,6 +811,7 @@ public class Jedis extends BinaryJedis implements JedisCommands, MultiKeyCommand
    * considered like empty hashes.
    * <p>
    * <b>Time complexity:</b> O(N) (with N being the number of fields)
+   * 从Hash中获取key下多个字段的值。
    * @param key
    * @param fields
    * @return Multi Bulk Reply specifically a list of all the values associated with the specified
@@ -938,6 +947,7 @@ public class Jedis extends BinaryJedis implements JedisCommands, MultiKeyCommand
    * Return all the fields and associated values in a hash.
    * <p>
    * <b>Time complexity:</b> O(N), where N is the total number of entries
+   * 取Hash的key下的所有字段值。
    * @param key
    * @return All the fields and values contained into a hash.
    */
@@ -954,6 +964,7 @@ public class Jedis extends BinaryJedis implements JedisCommands, MultiKeyCommand
    * is not a List an error is returned.
    * <p>
    * Time complexity: O(1)
+   * 在list尾部添加元素。
    * @param key
    * @param strings
    * @return Integer reply, specifically, the number of elements inside the list after the push
@@ -972,6 +983,7 @@ public class Jedis extends BinaryJedis implements JedisCommands, MultiKeyCommand
    * is not a List an error is returned.
    * <p>
    * Time complexity: O(1)
+   * 在list首部添加元素。
    * @param key
    * @param strings
    * @return Integer reply, specifically, the number of elements inside the list after the push
@@ -990,6 +1002,7 @@ public class Jedis extends BinaryJedis implements JedisCommands, MultiKeyCommand
    * error is returned.
    * <p>
    * Time complexity: O(1)
+   * 获取list的大小。
    * @param key
    * @return The length of the list.
    */
@@ -1027,6 +1040,7 @@ public class Jedis extends BinaryJedis implements JedisCommands, MultiKeyCommand
    * <p>
    * Time complexity: O(start+n) (with n being the length of the range and start being the start
    * offset)
+   * 从list中获取某个范围内的值。
    * @param key
    * @param start
    * @param stop
@@ -1153,6 +1167,7 @@ public class Jedis extends BinaryJedis implements JedisCommands, MultiKeyCommand
    * "b","c".
    * <p>
    * If the key does not exist or the list is already empty the special value 'nil' is returned.
+   * 在list手部删除元素。
    * @see #rpop(String)
    * @param key
    * @return Bulk reply
@@ -1170,6 +1185,7 @@ public class Jedis extends BinaryJedis implements JedisCommands, MultiKeyCommand
    * "a","b".
    * <p>
    * If the key does not exist or the list is already empty the special value 'nil' is returned.
+   * 在list尾部删除元素。
    * @see #lpop(String)
    * @param key
    * @return Bulk reply
@@ -1209,6 +1225,7 @@ public class Jedis extends BinaryJedis implements JedisCommands, MultiKeyCommand
    * sole member is created. If the key exists but does not hold a set value an error is returned.
    * <p>
    * Time complexity O(1)
+   * 给set添加元素。
    * @param key
    * @param members
    * @return Integer reply, specifically: 1 if the new element was added 0 if the element was
@@ -1226,6 +1243,7 @@ public class Jedis extends BinaryJedis implements JedisCommands, MultiKeyCommand
    * {@link #sinter(String...) SINTER}.
    * <p>
    * Time complexity O(N)
+   * 枚举出set的元素。
    * @param key
    * @return Multi bulk reply
    */
@@ -1242,6 +1260,7 @@ public class Jedis extends BinaryJedis implements JedisCommands, MultiKeyCommand
    * set no operation is performed. If key does not hold a set value an error is returned.
    * <p>
    * Time complexity O(1)
+   * 从set中移除元素。
    * @param key
    * @param members
    * @return Integer reply, specifically: 1 if the new element was removed 0 if the new element was
@@ -1489,8 +1508,9 @@ public class Jedis extends BinaryJedis implements JedisCommands, MultiKeyCommand
    * The score value can be the string representation of a double precision floating point number.
    * <p>
    * Time complexity O(log(N)) with N being the number of elements in the sorted set
+   * 插入sorted sets ，并指定元素的序号。
    * @param key
-   * @param score
+   * @param score 元素排序的序号。
    * @param member
    * @return Integer reply, specifically: 1 if the new element was added 0 if the element was
    *         already a member of the sorted set and the score was updated
@@ -1524,6 +1544,13 @@ public class Jedis extends BinaryJedis implements JedisCommands, MultiKeyCommand
     return client.getIntegerReply();
   }
 
+  /**
+   * 正序对sorted set进行范围取值。。
+   * @param key
+   * @param start
+   * @param stop
+   * @return
+   */
   @Override
   public Set<String> zrange(final String key, final long start, final long stop) {
     checkIsInMultiOrPipeline();
@@ -1628,6 +1655,13 @@ public class Jedis extends BinaryJedis implements JedisCommands, MultiKeyCommand
     return client.getIntegerReply();
   }
 
+  /**
+   * 根据范围反向取sorted set。
+   * @param key
+   * @param start
+   * @param stop
+   * @return
+   */
   @Override
   public Set<String> zrevrange(final String key, final long start, final long stop) {
     checkIsInMultiOrPipeline();
